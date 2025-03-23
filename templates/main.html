@@ -19,11 +19,13 @@
             h1{
                 font-size:96px;
                 color : #225A98;
-                margin-top: 146px;
+                margin-top: 64px;
                 width:517px;
                 height:154px;
+                line-height: 154px;  
                 -webkit-text-stroke: 1px #D9EAFD;
                 text-shadow: 0px 4px 4px #00000040;
+                margin-bottom:0px;
             }
             .button{
                 font-size : 20px;
@@ -35,7 +37,7 @@
             #sign-in{
                 background-color: #225A98;
                 color:#F8FAFC;
-                margin-top:69px;
+                margin-top:107px;
             }
             #sign-up{
                 background-color: #F8FAFC;
@@ -49,12 +51,16 @@
             <h1>
                 To Do List
             </h1>
-            <button class = "button" id = "sign-in">
-                로그인 하기
-            </button>
-            <button class = "button" id = "sign-up">
-                회원가입 하기
-            </button>
+            <a href = "{% url 'main:sign_in' %}">
+                <button class = "button" id = "sign-in">
+                    로그인 하기
+                </button>
+            </a>
+            <a href = "{% url 'main:sign_up' %}">
+                <button class = "button" id = "sign-up">
+                    회원가입 하기
+                </button>
+            </a>
         </div>
     </body>
 </html>

@@ -10,6 +10,26 @@
                 line-height: 100%;
                 letter-spacing : 0%;
             }
+            form{
+                width:447px;
+                height:98px;
+            }
+            label{
+                display: flex;
+                align-items:center;
+                margin-left :10px;
+                width:147px;
+                height:36px;
+                font-size:20px;
+                color:#151B22;
+            }
+            input{
+                width:447px;
+                height:62px;
+                background-color:#F3F9FF;
+                border-radius:8px;
+                border:none;
+            }
             body{
                 height: 100vh;
                 margin :0;
@@ -19,23 +39,33 @@
             h1{
                 font-size:96px;
                 color : #225A98;
-                margin-top: 146px;
+                margin-top: 64px;
                 width:517px;
                 height:154px;
+                line-height: 154px;  
                 -webkit-text-stroke: 1px #D9EAFD;
                 text-shadow: 0px 4px 4px #00000040;
+                margin-bottom:0px;
             }
             .button{
                 font-size : 20px;
-                width : 313px;
+                width : 234px;
                 height : 62px;
                 border-radius:8px;
                 border:none;
-            }
-            #sign-in{
                 background-color: #225A98;
                 color:#F8FAFC;
-                margin-top:69px;
+                margin-top:46px;
+                margin-left:107px;
+            }
+            #form_id{
+                margin-top:5px;
+            }
+            #form_password{
+                margin-top:10px;
+            }
+            #form_confirm_password{
+                margin-top:25px;
             }
         </style>
     </head>
@@ -44,16 +74,30 @@
             <h1>
                 To Do List
             </h1>
-            <form>
+            <form method = "POST" action="{% url 'main:sign_up' %}">
                 {% csrf_token %}
-                <label for = "id">
-                    아이디
-                </label>
-                <input type = "text" id = "id">
+                <div id = "form_id">
+                    <label for = "id">
+                        아이디
+                    </label>
+                    <input type = "text" id = "id" name  = "username">
+                </div>
+
+                <div id = "form_password">
+                    <label for = "password">
+                        패스워드
+                    </label>
+                    <input type = "password" id = "password" name = "password1">
+                </div>
+            
+                <div id = "form_confirm_password">
+                    <label for = "confirm_password">
+                        패스워드 확인
+                    </label>
+                    <input type = "password" id = "confirm_password" name  = "password2">
+                </div>
+                <button type = "submit" class = "button">회원가입</button>
             </form>
-            <button class = "button" id = "sign-in">
-                로그인 하기
-            </button>
         </div>
     </body>
 </html>
