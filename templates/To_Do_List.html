@@ -5,30 +5,58 @@
         <style>
             body{
                 background:#F8FAFC;
+                margin:0px;
+                padding:0px;
+            }
+            h1{
+                font-size:20px;
+                padding:0px;
+                margin:0px;
+                margin-top:6px;
+                margin-left:12px;
             }
             h2{
                 font-size:14px;
                 margin:0px;
+                padding:0px;
             }
             h3{
                 font-size:14px;
                 margin:0px;
             }
+            .nav{
+                display:flex;
+                flex-direction: row;
+                width: 100%;
+                box-sizing: border-box;
+                justify-content: space-between;
+            }
+            #info{
+                margin-top:6px;
+                margin-bottom:0px;
+                margin-right:1px;
+            }
+            .tmp{
+                margin-top:50px;
+            }
             .layout{
                 display:grid;
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(3, 226px);
                 gap:88px;
-                padding:20px;
+                padding:0px;
+                margin-left:94px;
             }
             .notice{
                 background : #D9EAFD;
                 border-radius:45px;
             }
             .title{
+                display:flex;
+                justify-content: space-between;
                 position: relative;
                 width:202px;
                 height:25.5px;
-                margin-left:12px;
+                margin-left:20px;
                 margin-top:15px;
                 margin-bottom:20.5px;
                 border-bottom:0.8px solid #225A98;
@@ -41,12 +69,39 @@
                 width: 100%;
                 box-shadow: 0px 4px 4px #00000040;
             }
+            .plus{
+                width:19px;
+                height:19px;
+                background-color: transparent;
+                border:1.5px solid #3b6ea5;
+                border-radius: 50%;
+                color: #3b6ea5;
+                cursor:pointer;
+                display:flex;
+                align-items:center;
+                justify-content: center;
+                padding:0;
+                margin-right:33px;
+            }
+            .plus-icon{
+                stroke:#3b6ea5;
+                stroke-width:2;
+                stroke-linecap:round;
+            }
+            .plus:active{
+                background-color:#3b6ea5;
+            }
+            
+            .plus:active .plus-icon{
+                stroke: #D9EAFD;
+            }
             .item{
                 display:flex;
                 flex-direction:row;
                 height : 30px;
                 width: 160px;
                 margin-left:32px;
+                margin-top:10px;
             }
             .content{
                 display:flex;
@@ -77,34 +132,369 @@
                 width:226px;
                 height:333px;
             }
+            .popup-overlay {
+                background: transparent; 
+                position: fixed;
+                top:0; left:0;right:0 ;bottom:0;
+                display: none;
+                justify-content: flex-start;
+                align-items: flex-start;
+                width:100%;
+                height: 100%;
+                z-index: 1000;
+                border : 1px;
+            }
+
+            .popup-content {
+                background: #F3F9FF;
+                margin-top: 46px; margin-left: 257px;
+                width:488px;
+                height:334px;
+                padding: 0px;
+                border-radius: 10px;
+                border:1px solid #225A98;
+            }
+            .popup-content form{
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            input[name='title']{
+                background-color:#E7F2FF;
+                border:1px;
+                width:366px;
+                height:41px;
+            }
+            input[name='due_date']{
+                background-color:#E7F2FF;
+                border:1px;
+                width:366px;
+                height:41px;    
+            }
+            #popup-layout1{
+                margin-left:49px;
+                margin-top:36px;
+            }
+            #popup-layout2{
+                margin-left:49px;
+                margin-top:44px;
+            }
+            .custom{
+                position: relative;
+                display: inline-block;
+            }
+            .custom input[type="date"] {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                padding-right: 20px; /* 아이콘 공간 확보 */
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                height: 30px;
+                background-color: white;
+                cursor: pointer;
+                color: transparent;
+                text-shadow: 0 0 0 #000;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                right: 0;
+                color: transparent;
+            }
+            .custom .custom-icon {
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: #666;
+                font-size: 12px;
+            }
+            
+            .popup-buttons{
+                display:flex;
+                flex-direction: row;
+                font-size:11px;
+                gap:17px;
+                margin-top:67px;
+                margin-left:368px;
+            }
+            .popup-buttons{
+                white-space: nowrap;
+                width:auto;
+            }
+            .item-popup-overlay{
+                background: transparent; 
+                position: fixed;
+                top:0; left:0;right:0 ;bottom:0;
+                display: none;
+                justify-content: flex-start;
+                align-items: flex-start;
+                width:100%;
+                height: 100%;
+                z-index: 1000;
+                border : 1px;
+            }
+            .popup-detail {
+                position:relative;
+                background: #F8FAFC;
+                margin-top:146px;
+                margin-left:100px;
+                width: 216px;
+                height: 265px;
+                border-radius: 10px;
+                border: 1px solid #8A9197;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .popup-detail input[type="text"],
+            .popup-detail input[type="date"] {
+                background-color: transparent;
+                border: none;
+                width: 100%;
+                height: 41px;
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .popup-detail button {
+                width: 100px;
+                height: 30px;
+                background:transparent;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            #edit{
+                color:#225A98;
+            }
+            #delete{
+                color:#E14C4F;
+            }
+            #edit:active{
+                color:#8A9197;
+            }
+            #delete:active {
+                color: #8A9197;
+            }
+
+            .popup-detail .popup-buttons {
+                display: flex;
+                gap: 16px;
+                justify-content: flex-end;
+                margin-top: auto;
+            }
+            .prev-button {
+                position:absolute;
+                background: none;
+                border: none;
+                cursor: pointer;
+                width: 13px !important;   /* 강제 적용 */
+                height: 13px !important;
+                padding:0px;
+                margin-top:12px;
+                margin-left:10px;
+            }
+
+            .prev-button svg {
+                width: 13px;
+                height: 13px;
+                stroke: #3B6EA5; /* 원하는 색 */
+                display: inline-block;
+                vertical-align: middle;
+            }
+            .To-Do {
+                background-color: #3B6EA5; /* 파란색 */
+                color: white;
+                border-radius: 30px; /* 둥근 원형 느낌 */
+                font-weight: 300;
+                width: 43px;
+                height:17px;
+                font-size:10px;
+                user-select: none; /* 텍스트 드래그 방지 (선택사항) */
+                margin-top:23px;
+                margin-left:87px;
+                display: flex;
+                justify-content: center;    /* 가로 중앙 */
+                align-items: center;
+            }
+            .dot{
+                font-size:10px;
+                margin-top:25px;
+                margin-left:29px;
+                color:#3C70A9;
+            }
+            .dot::before{
+                content: "•";              /* 유니코드 동그라미 */
+                color: #3B6EA5;            /* 색상 지정 */
+                margin-right: 6px;         /* 글자와의 간격 */
+                font-size: 12px;           /* 크기 조절 */
+                vertical-align: middle;
+                top:10px;
+            }
         </style>
     </head>
     <body>
         <div class = 'nav'>
             <h1>To Do List</h1>
-
+            <div>
+            <span id = "info">{{ request.user.username }} 님</span>
+            <a href="{% url 'main:sign_in' %}" style="margin-left: 8px; color: #3C70A9; text-decoration: none;">/ 로그아웃</a>
+            </div>
         </div>
+        <div class = 'tmp'>
         <div class = 'layout'>
+            
             <div class="notice" id = "todo">
                 <div class = "title">
                     <h2>to do</h2>
+                    <button class = "plus" onclick = "openPopup()">
+                        <svg class="plus-icon" viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                    </button>
                 </div>
-                <div class = 'item'>
+                {% for task in todo_tasks %}
+                <div class = 'item' onclick = "openItemPopup(this)" data-title="{{task.title}}" data-date="{{ task.due_date|date:'Y-m-d' }}">
                     <div class = 'content'>
                         <h3>
-                            알고리즘 공부하기
+                            {{task.title}}
                         </h3>
-                        <p class = "date">2025.03.06까지</p>
+                        <p class = "date">{{task.due_date|date:"Y.m.d"}}까지</p>
                     </div>
                     <button class = "checkbox"></button>
                 </div>
+                {% endfor %}
             </div>
+            
+
             <div class="notice" id = "endtodo">
+                <div class = "title">
                 <h2>end to do</h2>
+                </div>
             </div>
+
             <div class="notice" id = "notendtodo">
+                <div class = "title">
                 <h2>not end to do</h2>
+                </div>
             </div>
         </div>
+        </div>
+
+
+        <div id="popup" class="popup-overlay" style="display:none;">
+            <div class="popup-content">
+                <form method="post" action="{% url 'main:add_task' %}">
+                    {% csrf_token %}
+
+                    <div id = "popup-layout1">
+                    <label for="title">TO DO 입력</label>
+                    <input type="text" name="title" required>
+                    </div>
+
+                    <div id = "popup-layout2">
+                    <label for="due_date">TO DO 기한 설정</label>
+                    
+                    <div id = "custom">
+                    <input type="date" name="due_date" value="" required>
+                    <span class="custom-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="#666" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </span>
+                    </div>
+                    
+                    </div>
+
+                    <div class="popup-buttons">
+                        <button type="button" id = "cancel" onclick="closePopup()">취소</button>
+                        <button type="submit" id = "save">저장 후 닫기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div id = "item-popup" class="item-popup-overlay" style = "display: none;">
+            <div class = "popup-detail">
+                <div>
+                    <button class="prev-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="8 5 10 14">
+                        <path d="M15 18L9 12L15 6" />
+                        </svg>
+                    </button>
+                    <div class = "To-Do">
+                        TO Do
+                    </div>
+                    <div class="dot">to do</div>
+                    <input type="text" id = "data-title"></h2>
+                    <div class="dot">기한</div>
+                    <input type="date" id = "data-date"></p>
+                    <div>
+                        <button id = "edit">
+                            수정
+                        </button>
+                        <button id = "delete">
+                            삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function openPopup() {
+                document.getElementById("popup").style.display = "flex";
+            }
+
+            function closePopup() {
+                document.getElementById("popup").style.display = "none";
+            }
+            function openItemPopup(element) {
+                const title = element.dataset.title;
+                const date = element.dataset.date;
+
+                document.getElementById("data-title").value = title;
+                document.getElementById("data-date").value = date;
+
+                document.getElementById("item-popup").style.display = "flex";
+
+                // 수정/삭제 버튼 이벤트 등록
+                const editBtn = document.getElementById("edit");
+                const deleteBtn = document.getElementById("delete");
+
+                // 기존 이벤트 제거 (중복 방지)
+                editBtn.onclick = null;
+                deleteBtn.onclick = null;
+
+                // 수정 버튼 클릭 시 동작 예시
+                editBtn.onclick = function() {
+                    alert(`'${title}' 항목을 수정합니다.`);
+                    // 여기에 수정 기능 연결
+                    closeDetailPopup();
+                };
+
+                // 삭제 버튼 클릭 시 동작 예시
+                deleteBtn.onclick = function() {
+                    if (confirm(`'${title}' 항목을 삭제하시겠습니까?`)) {
+                        alert(`'${title}' 항목이 삭제되었습니다.`);
+                        // 여기에 삭제 기능 연결
+                        closeDetailPopup();
+                    }
+                };
+            }
+
+            function closeDetailPopup() {
+                document.getElementById("item-popup").style.display = "none";
+            }
+        </script>
     </body>
 </html>
