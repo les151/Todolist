@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Task
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 # Create your views here.
 def index(request):
     return render(request, 'main.html')
@@ -51,3 +55,35 @@ def add_task(request):
         if title and due_date:
             Task.objects.create(title = title , due_date = due_date, user = request.user)
     return redirect('main:login')
+
+def delete_task(request, task_id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        task.delete()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+@csrf_exempt
+def edit_task(request, task_id):
+    if request.method == 'POST':
+        try:
+            task = Task.objects.get(pk=task_id)
+            data = json.loads(request.body)
+
+            title = data.get('title')
+            due_date = data.get('due_date')
+
+            if title:
+                task.title = title
+            if due_date:
+                task.due_date = due_date
+
+            task.save()
+            return JsonResponse({'success': True})
+        except Task.DoesNotExist:
+            return JsonResponse({'success': False, 'error': '할 일을 찾을 수 없습니다.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'POST 요청만 지원됩니다.'})
