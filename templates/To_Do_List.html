@@ -392,7 +392,6 @@
         </div>
         <div class = 'tmp'>
         <div class = 'layout'>
-            
             <div class="notice" id = "todo">
                 <div class = "title">
                     <h2>to do</h2>
@@ -410,7 +409,7 @@
                         </h3>
                         <p class = "date">{{task.due_date|date:"Y.m.d"}}까지</p>
                     </div>
-                    <button class = "checkbox"></button>
+                    <button class = "checkbox" data-id="{{ task.id }}"></button>
                 </div>
                 {% endfor %}
             </div>
@@ -420,12 +419,30 @@
                 <div class = "title">
                 <h2>end to do</h2>
                 </div>
+                {% for task in done_tasks %}
+                <div class='item' onclick="openItemPopup(this)" data-id="{{task.id}}" data-title="{{task.title}}" data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    <div class='content'>
+                        <h3>{{ task.title }}</h3>
+                        <p class="date">{{ task.due_date|date:"Y.m.d" }}까지</p>
+                    </div>
+                    <button class="checkbox" data-id="{{ task.id }}"></button>
+                </div>
+                {% endfor %}
             </div>
 
             <div class="notice" id = "notendtodo">
                 <div class = "title">
                 <h2>not end to do</h2>
                 </div>
+                {% for task in not_done_tasks %}
+                <div class='item' onclick="openItemPopup(this)" data-id="{{task.id}}" data-title="{{task.title}}" data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    <div class='content'>
+                        <h3>{{ task.title }}</h3>
+                        <p class="date">{{ task.due_date|date:"Y.m.d" }}까지</p>
+                    </div>
+                <button class="checkbox" data-id="{{ task.id }}"></button>
+            </div>
+            {% endfor %}
             </div>
         </div>
         </div>
@@ -573,31 +590,6 @@
                     });
                 };
 
-                // 삭제 버튼 클릭 시 동작 예시
-                /*
-                deleteBtn.onclick = function() {
-                    if (confirm(`'${title}' 항목을 삭제하시겠습니까?`)) {
-                        const taskId = element.dataset.id;
-
-                        fetch(`/main/delete-task/${taskId}/`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': getCookie('csrftoken'),
-                                'Content-Type': 'application/json'
-                            },
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert(`'${title}' 항목이 삭제되었습니다.`);
-                                element.remove();  // 화면에서도 제거
-                                closeDetailPopup();
-                            } else {
-                                alert('삭제에 실패했습니다: ' + (data.error || '알 수 없는 오류'));
-                            }
-                        });
-                    }
-                };*/
                 deleteBtn.onclick = function () {
                     const taskId = element.dataset.id;
                     const title = element.dataset.title;
@@ -650,6 +642,34 @@
                 }
                 return cookieValue;
             }
+            function closeDetailPopup() {
+                document.getElementById("item-popup").style.display = "none";
+            }
+            document.querySelectorAll('.checkbox').forEach(btn => {
+                btn.addEventListener('click', function (event) {
+                    event.stopPropagation();  // item 클릭 이벤트와 겹치지 않게
+
+                    const taskId = btn.dataset.id;
+
+                    fetch(`/main/update-task-status/${taskId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})  // 필요한 정보가 있다면 넣기
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("할 일이 완료되었습니다.");
+                            location.reload();  // 또는 화면에서 해당 item만 제거/이동
+                        } else {
+                            alert("업데이트 실패: " + data.error);
+                        }
+                    });
+                });
+            });
         </script>
     </body>
 </html>

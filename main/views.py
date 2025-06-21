@@ -8,10 +8,34 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.utils.timezone import now
+
 # Create your views here.
 def index(request):
     return render(request, 'main.html')
 
+
+def To_Do_List_page(request):
+    user = request.user
+    today = now().date()
+
+    # status='todo' 이면서 마감일이 오늘 또는 이후 → To Do
+    todo_tasks = Task.objects.filter(user=user, status='todo', due_date__gte=today).order_by('due_date')
+
+    # status='todo' 이면서 마감일이 오늘 이전 → Not End To Do
+    not_done_tasks = Task.objects.filter(user=user, status='todo', due_date__lt=today).order_by('due_date')
+
+    # status='done' → End To Do
+    done_tasks = Task.objects.filter(user=user, status='done').order_by('due_date')
+
+    return render(request, 'To_Do_List.html', {
+        'todo_tasks': todo_tasks,
+        'done_tasks': done_tasks,
+        'not_done_tasks': not_done_tasks,
+    })
+
+
+"""
 def To_Do_List_page(request):
     user = request.user
     todo_tasks     = Task.objects.filter(user=user, status='todo').order_by('due_date')
@@ -22,7 +46,7 @@ def To_Do_List_page(request):
         'done_tasks': done_tasks,
         'not_done_tasks': not_done_tasks,
     })
-
+"""
 def sign_in(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -87,3 +111,15 @@ def edit_task(request, task_id):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'POST 요청만 지원됩니다.'})
+
+@csrf_exempt  # AJAX POST를 위해 필요 (또는 JS에서 CSRF 처리 해도 됨)
+def update_task_status(request, task_id):
+    if request.method == 'POST':
+        try:
+            task = Task.objects.get(id=task_id, user=request.user)
+            task.status = 'done'
+            task.save()
+            return JsonResponse({'success': True})
+        except Task.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Task not found'})
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
